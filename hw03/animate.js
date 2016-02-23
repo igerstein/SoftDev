@@ -17,6 +17,8 @@ logo.src = "logo_dvd.jpg";
 
 var dvdX = 200;
 var dvdY = 200;
+var dvdXIncreasing = true;
+var dvdYIncreasing = true;
 
 var requestID;
 
@@ -24,27 +26,26 @@ var requestID;
 var startCircle = function(e){
 
     //Clears the canvas
-    ctx.clearRect(0, 0, 400, 400);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     //Draws a circle with the current radius
     ctx.fillStyle = "red";
     ctx.beginPath();
-    ctx.arc(200, 200, radius, 0, Math.PI * 2);
+    ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, radius, 0, Math.PI * 2);
     ctx.fill();
 
     //If the radius is at a maximum or minimum, change whether it is increasing
-    if (radius == 200){
+    if (radius == ctx.canvas.width / 2){
 	increasing = false;
-    }
-    if (radius == 0){
+    } else if (radius == 0){
 	increasing = true;
     }
 
     //Increase or decrease the radius
     if (increasing){
-	radius += 5;
+	radius += 2;
     } else {
-	radius -= 5;
+	radius -= 2;
     }
 
     //Call the function again
@@ -55,11 +56,37 @@ var startCircle = function(e){
 var startDvd = function(e){
     
     //Clears the canvas
-    ctx.clearRect(0, 0, 400, 400);
+    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
     //Draws the logo
     ctx.drawImage(logo, dvdX, dvdY, 90, 60);
 
+    //If the coordinates are at the edge of the canvas, change directions
+    if (dvdX == ctx.canvas.width - 90){
+	dvdXIncreasing = false;
+    } else if (dvdX == 0){
+	dvdXIncreasing = true;
+    }
+    if (dvdY == ctx.canvas.height - 60){
+	dvdYIncreasing = false;
+    } else if (dvdY == 0){
+	dvdYIncreasing = true;
+    }
+
+    //Increase or decrease the coordinates
+    if (dvdXIncreasing){
+	dvdX += 2;
+    } else {
+	dvdX -= 2;
+    }
+    if (dvdYIncreasing){
+	dvdY += 2;
+    } else {
+	dvdY -= 2;
+    }
+
+    //Call the function again
+    requestID = window.requestAnimationFrame(startDvd);
 };
 
 //Stops the circle
