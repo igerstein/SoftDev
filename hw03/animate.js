@@ -1,104 +1,119 @@
 // Isaac Gerstein
 // SoftDev2 pd6
-// HW03 -- Animation Continued
-// 2016-02-24
+// HW03 -- Animation Continued (With Framework)
+// 2016-02-25
 
-var canvas = document.getElementById("playground");
-var ctx = canvas.getContext("2d");
-var circle = document.getElementById("circle");
-var dvd = document.getElementById("dvd");
-var stop = document.getElementById("stop");
+//model for HTML5 canvas-based animation
 
-var radius = 0;
-var increasing = true;
+//access canvas and buttons via DOM
+var c = document.getElementById("playground");
+var dotButton = document.getElementById( "circle" );
+var dvdButton = document.getElementById( "dvd" );
+var stopButton = document.getElementById( "stop" );
 
-var logo = new Image();
-logo.src = "logo_dvd.jpg";
+//prepare to interact with canvas in 2D
+var ctx = c.getContext("2d");
 
-var dvdX = 200;
-var dvdY = 200;
-var dvdXIncreasing = true;
-var dvdYIncreasing = true;
+//set fill color to red
+ctx.fillStyle = "#ff0000";
+
 
 var requestID;
 
-//Draws a circle with a changing radius
-var startCircle = function(e){
+var clear = function(e) {
+    e.preventDefault();
+    ctx.clearRect(0, 0, 500, 500);
+};
 
-    //Clears the canvas
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+var radius = 0;
+var growing = true;
 
-    //Draws a circle with the current radius
-    ctx.fillStyle = "red";
+
+var drawDot = function() {
+    
+    ctx.clearRect( 0, 0, c.width, c.height );
+
+    if ( growing ) {
+	radius = radius + 1;
+    }    
+    else {
+	radius = radius - 1;
+    }
+
+    if ( radius == (c.width / 2) )
+	growing = false;
+    else if ( radius == 0 ) {
+	growing = true;
+    }
+    
     ctx.beginPath();
-    ctx.arc(ctx.canvas.width / 2, ctx.canvas.height / 2, radius, 0, Math.PI * 2);
+    ctx.arc( c.width / 2, c.height / 2, radius, 0, 2 * Math.PI );
+    ctx.stroke();
     ctx.fill();
 
-    //If the radius is at a maximum or minimum, change whether it is increasing
-    if (radius == ctx.canvas.width / 2){
-	increasing = false;
-    } else if (radius == 0){
-	increasing = true;
-    }
-
-    //Increase or decrease the radius
-    if (increasing){
-	radius += 2;
-    } else {
-	radius -= 2;
-    }
-
-    //Call the function again
-    requestID = window.requestAnimationFrame(startCircle);
+    requestID = window.requestAnimationFrame( drawDot );
 };
 
-//Draws a moving dvd logo
-var startDvd = function(e){
+
+
+var dvdLogoSetup = function() {
     
-    //Clears the canvas
-    ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
+    //cancels the drawDot animation if it is still running
+    window.cancelAnimationFrame( requestID );
+   
+    //var inits
+    var dvdX = 200;
+    var dvdY = 200;
+    var dvdXIncreasing = true;
+    var dvdYIncreasing = true;
+    var logo = new Image();
+    logo.src = "logo_dvd.jpg";
 
-    //Draws the logo
-    ctx.drawImage(logo, dvdX, dvdY, 90, 60);
 
-    //If the coordinates are at the edge of the canvas, change directions
-    if (dvdX == ctx.canvas.width - 90){
-	dvdXIncreasing = false;
-    } else if (dvdX == 0){
-	dvdXIncreasing = true;
-    }
-    if (dvdY == ctx.canvas.height - 60){
-	dvdYIncreasing = false;
-    } else if (dvdY == 0){
-	dvdYIncreasing = true;
-    }
+    //a function defined within a function, oh my!
+    var dvdLogo = function() {
+	
+	//propulsion mechanism
+	ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
 
-    //Increase or decrease the coordinates
-    if (dvdXIncreasing){
-	dvdX += 2;
-    } else {
-	dvdX -= 2;
-    }
-    if (dvdYIncreasing){
-	dvdY += 2;
-    } else {
-	dvdY -= 2;
-    }
+	ctx.drawImage(logo, dvdX, dvdY, 90, 60);
 
-    //Call the function again
-    requestID = window.requestAnimationFrame(startDvd);
+	if (dvdX == ctx.canvas.width - 90){
+	    dvdXIncreasing = false;
+	} else if (dvdX == 0){
+	    dvdXIncreasing = true;
+	}
+	if (dvdY == ctx.canvas.height - 60){
+	    dvdYIncreasing = false;
+	} else if (dvdY == 0){
+	    dvdYIncreasing = true;
+	}
+
+	if (dvdXIncreasing){
+	    dvdX += 2;
+	} else {
+	    dvdX -= 2;
+	}
+	if (dvdYIncreasing){
+	    dvdY += 2;
+	} else {
+	    dvdY -= 2;
+	}
+
+	//continually calls the dvdLogo function, but not the dvdLogoSetup function
+	requestID = window.requestAnimationFrame( dvdLogo );		
+    };
+
+    dvdLogo();
 };
 
-//Stops the circle
-var stopAnimation = function(e){
-    window.cancelAnimationFrame(requestID);
+
+var stopIt = function() {
+    console.log( requestID );
+    window.cancelAnimationFrame( requestID );
 };
 
-//Calls the startCircle function when the start button is clicked
-circle.addEventListener("click", startCircle);
 
-//Calls the startDvd function when the DVD button is clicked
-dvd.addEventListener("click", startDvd);
-
-//Calls the stopAnimation function when the stop button is clicked
-stop.addEventListener("click", stopAnimation);
+dotButton.addEventListener( "click", drawDot );
+dvdButton.addEventListener( "click", dvdLogoSetup );
+stopButton.addEventListener( "click",  stopIt );
