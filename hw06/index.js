@@ -120,8 +120,7 @@ var republicans = {
     "North Dakota": [28, false],
     "South Dakota": [29, false],
     "District of Columbia": [19, true]
-};    
-
+};
 
 //Finds the total number of delegates, number allotted, and number not yet allotted
 var totalDelegates = 0;
@@ -171,7 +170,7 @@ var delegateArray = [];
 for (var i in delegates){
     delegateArray.push(i);
     delegateArray.push(delegates[i].concat([true]));
-    delegateArray.push(republicans[i].concat([false]));
+    //delegateArray.push(republicans[i].concat([false]));
 }
 
 
@@ -227,4 +226,6 @@ divEnter.style("padding-top", function(d){
     }
 });
 
-//d3.select("body").transition().style("background-color", "black");
+//var states = d3.selectAll("div").attr("width");
+//console.log(states);
+
