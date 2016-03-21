@@ -3,6 +3,9 @@
 // HW06 -- Delegate Transition
 // 2016-03-22
 
+//true = democrats being displayed, false = republicans being displayed
+var onDemocrats = true;
+
 //Each key is a state, and each value is an array with the number of delegates and whether they have been allotted
 var delegates = {
     "Iowa": [44, true],
@@ -169,7 +172,7 @@ notAllottedR.text("Not yet allotted: " + notAllottedRep);
 var delegateArray = [];
 for (var i in delegates){
     delegateArray.push(i);
-    delegateArray.push(delegates[i].concat([true]));
+    delegateArray.push(delegates[i].concat(republicans[i]));
     //delegateArray.push(republicans[i].concat([false]));
 }
 
@@ -180,31 +183,42 @@ var div = states.selectAll("div");
 var divUpdate = div.data(delegateArray);
 var divEnter = divUpdate.enter().append("div");
 var demOrRep = true;
+
 //Sets the text and style of the divs based on whether they are labels or bars
 divEnter.text(function(d){
     if (typeof d == "string"){
 	return d;
     } else {
-	return d[0];
+	if (onDemocrats){
+	    return d[0];
+	} else {
+	    return d[2];
+	}
     }
 });
 divEnter.style("width", function(d){
     if (typeof d == "object"){
-	return d[0] * 3 + "px";
+	if (onDemocrats){
+	    return d[0] * 3 + "px";
+	} else {
+	    return d[2] * 3 + "px";
+	}
     }
 });
 divEnter.style("background", function(d){
     if (typeof d == "object"){
-	if (d[1]){
-	    if (d[2]){
+	if (onDemocrats){
+	    if (d[1]){
 		return "green";
-	    }
-	    return "red";
-	} else {
-	    if (d[2]){
+	    } else {
 		return "orange";
 	    }
-	    return "purple";
+	} else {
+	    if (d[3]){
+		return "green";
+	    } else {
+		return "orange";
+	    }
 	}
     }
 });
@@ -226,6 +240,49 @@ divEnter.style("padding-top", function(d){
     }
 });
 
-//var states = d3.selectAll("div").attr("width");
-//console.log(states);
+//Transitions between parties when the states div is clicked
+states.on("click", function(){
+    onDemocrats = !onDemocrats;
+    if (onDemocrats){
+	d3.selectAll("div").transition().style("width", function(d){
+	    if (typeof d == "object"){
+		return d[0] * 3 + "px";
+	    }
+	}).style("background", function(d){
+	    if (typeof d == "object"){
+		if (d[1]){
+		    return "green";
+		} else {
+		    return "orange";
+		}
+	    }
+	});
+	var divs = document.getElementById("states");
+	for (var i = 0; i < divs.children.length; i++){
+	    if (!isNaN(parseInt(divs.children[i].innerHTML))){
+		divs.children[i].innerHTML = delegateArray[i][0];
+	    }
+	}
+    } else {
+	d3.selectAll("div").transition().style("width", function(d){
+	    if (typeof d == "object"){
+		return d[2] * 3 + "px";
+	    }
+	}).style("background", function(d){
+	    if (typeof d == "object"){
+		if (d[3]){
+		    return "green";
+		} else {
+		    return "orange";
+		}
+	    }
+	});
+	var divs = document.getElementById("states");
+	for (var i = 0; i < divs.children.length; i++){
+	    if (!isNaN(parseInt(divs.children[i].innerHTML))){
+		divs.children[i].innerHTML = delegateArray[i][2];
+	    }
+	}
+    }
+});
 
