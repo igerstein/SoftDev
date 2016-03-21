@@ -1,0 +1,12 @@
+/*
+Isaac Gerstein
+SoftDev2 pd6
+HW05 -- Delegates
+2016-03-21
+*/
+
+#states {
+    font: 14px;
+    margin: 3px;
+    padding: 3px;
+}
