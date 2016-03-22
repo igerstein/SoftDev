@@ -240,6 +240,16 @@ divEnter.style("padding-top", function(d){
     }
 });
 
+//Displays the name of the currently displayed party
+var party = d3.select("#party");
+party.text(function(d){
+    if (onDemocrats){
+	return "Democratic Party";
+    } else {
+	return "Republican Party";
+    }
+});
+
 //Transitions between parties when the states div is clicked
 states.on("click", function(){
     onDemocrats = !onDemocrats;
@@ -284,5 +294,13 @@ states.on("click", function(){
 	    }
 	}
     }
+    var party = d3.select("#party");
+    party.text(function(d){
+	if (onDemocrats){
+	    return "Democratic Party";
+	} else {
+	    return "Republican Party";
+	}
+    });
 });
 
