@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block title %} triviAPI {% endblock title %}
+
+{% block navlinks %}
+<li role="presentation"><a href="/">Home</a></li>
+<li role="presentation" class="active"><a href="/quiz">Quizzes</a></li>
+
+{% endblock navlinks %}
+
+{% block body %}
+<div class="row marketing">
+
+<center>
+  <h3>Can you name these actors?</h3>
+  <form method="POST">
+  <table>
+    <tr>
+      <td><b>Actor</b></td>
+      <td><b>Character</b></td>
+    </tr>
+    {% if character|length > 10 %} 
+    {% for i in range(0, 9) %}
+    <tr>
+      <td><input type="text" name="name{{i}}"></td>
+      <td>{{character[i]}}</td>
+    </tr>
+    {% endfor %}
+
+    {% else %} 
+    {% for i in range(0, character|length) %}
+    <tr>
+      <td><input type="text" name="name{{i}}"></td>
+      <td>{{character[i]}}</td>
+    </tr>
+    {% endfor %}
+    {% endif %}
+  </table>
+  <input type="submit" name="button" value="Submit">
+  <input type="submit" name="button" value="Give up?">
+  </form>
+
+</center>
+</div>
+{% endblock body %}
+
