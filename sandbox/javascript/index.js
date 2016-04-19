@@ -23,3 +23,12 @@ var makeIncrementer = function() {
     }
     return inc
 };
+
+var makeAdder = function(n) {
+    var i = 0;
+    var add = function() {
+	i = i + n;
+	return i;
+    }
+    return add
+};
