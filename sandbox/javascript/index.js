@@ -25,10 +25,28 @@ var makeIncrementer = function() {
 };
 
 var makeAdder = function(n) {
-    var i = 0;
-    var add = function() {
-	i = i + n;
-	return i;
+    var add = function(x) {
+	return x + n;
     }
     return add
+};
+
+var makeCounter = function() {
+    //Instance variable
+    var i = 0;
+
+    //Accessor method
+    var get = function() {
+	return i;
+    };
+
+    //Means of accessing members
+    return  {
+	x: "something in the dictionary",
+	get: get,
+	set: function(x) { i = x; },
+	inc: function() { i++; },
+	dec: function() { i--; },
+	setx: function(x) { this.x = x;	}
+    };
 };
